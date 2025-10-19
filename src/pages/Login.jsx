@@ -1,10 +1,13 @@
-import React, { use, useState } from "react";
+import React, { use, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router";
 import { AuthContext } from "../Provider/AuthProvider";
 
 const Login = () => {
-  const { logInUser, setUser } = use(AuthContext);
+  const { logInUser, setUser, resetPassword } = use(AuthContext);
   const [error, setError] = useState('')
+
+  const emailRef = useRef();
+  // console.log(emailRef.current.value)
 
   const location = useLocation();
   // console.log(location)
@@ -26,6 +29,18 @@ const Login = () => {
       })
   }
 
+  const handleResetPassword = (e) => {
+    e.preventDefault();
+    const email = emailRef.current.value;
+    resetPassword(email)
+      .then(() => {
+        alert('We send a email to you')
+      })
+      .catch(er => {
+        console.log(er.code)
+      })
+  }
+
   return (
     <div className="flex justify-center mt-15">
       <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl pt-5">
@@ -34,12 +49,12 @@ const Login = () => {
           <fieldset className="fieldset">
             {/* email */}
             <label className="label">Email</label>
-            <input type="email" className="input" name="email" placeholder="Email" />
+            <input ref={emailRef} type="email" className="input" name="email" placeholder="Email" />
             {/* password */}
             <label className="label">Password</label>
             <input type="password" className="input" name="password" placeholder="Password" />
             <div>
-              <a className="link link-hover">Forgot password?</a>
+              <button onClick={handleResetPassword} className="link link-hover">Forgot password?</button>
             </div>
             {
               error && <p className="text-red-400 text-xs">{ error}</p>
